@@ -34,7 +34,7 @@ A state with only a single jurisdiction only has a single file with the single l
 
 <hr>
 
-The table below shows the number of jurisdictions (usually counties) by state.
+The table below shows the number of jurisdictions (usually counties) by state and the number of columns after removal of columns with missing or constant data.
 
 <img src="2024/2024-EAVS-Jurisdictions-and-Reduced-Columns.jpg" alt="Reduced Columns" style="width:60%; height:auto;">
 
