@@ -2,7 +2,7 @@
 
 # 2024
 
-[EAC Studies and Reports](https://www.eac.gov/research-and-data/studies-and-reports) page
+See [EAC Studies and Reports](https://www.eac.gov/research-and-data/studies-and-reports) page.
 
 Data accompanying the 2024 EAVS report was released online on June 30, 2025.
 
