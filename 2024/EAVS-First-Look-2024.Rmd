@@ -1,0 +1,408 @@
+---
+params:
+  ELECTION_YEAR: 2024
+
+title: "EAC Election Administration and Voting Survey -- 2024"
+subtitle:  "First Look"
+author: "Earl F Glynn<br><small>watchdoglab.substack.com</small>"
+date: "<small>`r Sys.Date()`</small>"
+output:
+  html_document:
+    code_download: true
+    theme: cerulean
+    toc: yes
+    toc_depth:  3
+    toc_float:
+      collapsed:  yes
+      smooth_scroll: yes
+    number_sections: yes
+    code_folding:  show
+---
+
+```{r setup, echo = FALSE}
+# http://biostat.mc.vanderbilt.edu/wiki/Main/KnitrHtmlTemplate
+require(Hmisc)    # provides knitrSet and other functions
+knitrSet(lang = 'markdown',   # If using blogdown: knitrSet(lang='blogdown')
+         fig.align = 'left',
+         w = 6.5,
+         h = 4.5,
+         cache = FALSE)
+```
+
+`r hidingTOC(buttonLabel = "Outline")`
+
+```{r startYourEngines, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  comment = NA)
+
+time.1 <- Sys.time()
+```
+
+# Setup {.tabset .tabset-fade .tabset-pills}
+
+## {.active}
+
+## Constants
+
+```{r}
+EXCEL_LIMIT <- 2^20
+```
+
+## Packages
+
+```{r Packages}
+library(tidyverse)
+library(lubridate)
+```
+
+Display formatting
+
+```{r Display}
+library(kableExtra)  # kable_styling
+```
+
+I/O
+
+```{r IO}
+library(readxl)      # read_xlsx
+library(readr)       # write_csv
+library(writexl)     # write_xlsx
+```
+
+## Helper functions
+
+```{r Helpers}
+Show <- function(data, caption="", bigMark="",
+                 height = NULL, width = NULL, ...)
+{
+  data                                       |>
+  kable("html", caption=caption,
+        format.args=list(big.mark=bigMark))  |>
+  kable_styling(bootstrap_options=c("striped", "bordered", "condensed"),
+                position="left",
+                full_width=FALSE, ...)       |>
+  scroll_box(height = height, width = width)
+}
+```
+
+# Source
+
+US Election Assistance Commission [Studies and Reports](https://www.eac.gov/research-and-data/studies-and-reports)
+
+[`2024 Election Administration and Voting Survey Report`](https://www.eac.gov/sites/default/files/2025-06/2024_EAVS_Report_508c.pdf)
+
+Election Administration and Voting Survey (EAVS) 2024 Comprehensive Report, June 2025.
+
+
+* National Voter Registration Act (NVRA) Findings
+
+* Uniformed and Overseas Citizens Absentee Voting Act (UOCAVA) Findings
+
+Abbreviations
+
+* CVAP - Citizen Voting Age Population estimate for 18 years of age or older using 2023 American Community Survey (ACS) state estimate for 2023. Some states may have reported more active registered voters than CVAP because the 2023 CVAP is being compared to 2024 data
+
+* Voting-eligible population (VEP)
+
+* SRP
+
+
+[`EAVS Reports and Materials by Reporting Year 2024`](https://www.eac.gov/research-and-data/studies-and-reports)
+
+```{r}
+filenameCodebook <- paste0(params$ELECTION_YEAR, "_EAVS_Codebook.xlsx")
+filenameCodebook
+```
+
+```{r}
+filenameEAVS <- paste0(params$ELECTION_YEAR, "_EAVS_for_Public_Release_nolabel_V1.csv")
+filenameEAVS
+```
+
+# EAVS: Data Codebook
+
+[2024_EAVS_Codebook.xlsx](https://www.eac.gov/sites/default/files/2025-06/2024_EAVS_Codebook.xlsx)
+
+Copy stored locally.
+
+```{r EAVS-codebook}
+codebookEAVS <- 
+  read_xlsx(filenameCodebook, col_types = "text") |>
+  mutate_at(vars(ValidResponses:Missing), as.numeric)
+          
+dim(codebookEAVS)
+```
+
+# EAVS Datasets Version 1.0 
+
+Released June 30, 2025 in formats Excel, Stata, CSV, SPSS, SAS.
+
+Use local [copy of the CSV format](https://www.eac.gov/sites/default/files/2025-06/2024_EAVS_for_Public_Release_nolabel_V1_csv.zip)
+
+File `2024_EAVS_for_Public_Release_nolabel_V1.csv` extracted from `2024_EAVS_for_Public_Release_nolabel_V1_csv.zip`, which when unzipped is in folder `2024_EAVS_for_Public_Release_nolabel_V1`
+
+```{r EAVS-dataset}
+dataEAVS <- 
+  read_csv(filenameEAVS, col_types = cols(.default = "c"))
+           
+dim(dataEAVS)
+```
+
+## Consistency checks
+
+Do rows in codebook match columns in data?
+
+```{r}
+nrow(codebookEAVS) == ncol(dataEAVS)
+```
+
+Do names in codebook match column names in data?
+
+```{r}
+all(codebookEAVS$VariableName == colnames(dataEAVS))
+```
+
+## Assign codebook datatypes
+
+Called "format" in codebook.
+
+```{r}
+table(codebookEAVS$Format)
+```
+
+```{r}
+columnIndexNumeric <- which(codebookEAVS$Format == "Numeric")
+length(columnIndexNumeric)
+```
+
+```{r}
+dataEAVS <- 
+  dataEAVS |>
+  mutate_at(columnIndexNumeric, as.numeric)
+```
+
+## Replace cryptic variable names with verbose codebook labels
+
+Likely will need to rename verbose labels with shorter mnemonic names in other processing 
+
+```{r}
+colnames(dataEAVS) <- codebookEAVS$Label
+```
+
+# Write EAVS with Labels
+
+```{r}
+write_xlsx(dataEAVS, paste0(params$ELECTION_YEAR, 
+                            "-EAVS-Data-with-Labels.xlsx"))
+```
+
+# State EAVS Files
+
+## Split into separate state files for exploration with Excel
+
+```{r}
+splits <- 
+  dataEAVS  |>
+  group_split(`State Name (Full)`)
+
+length(splits)
+```
+
+## Create  separate state files
+
+```{r}
+stateCounts <- tibble(
+                       State         = rep(NA_character_, length(splits)),
+                       Jurisdictions = rep(NA_integer_,   length(splits)),
+                       Columns       = rep(NA_integer_,   length(splits))
+                     )
+```
+
+
+```{r}
+STATES <- "States"
+```
+
+```{r}
+for (i in 1:length(splits))
+{
+  stateRaw <- splits[[i]]
+  
+  STATE                        <- stateRaw$`State Name (Full)`[1]
+  stateCounts$State[i]         <- STATE
+  stateCounts$Jurisdictions[i] <- nrow(stateRaw)
+  
+  STATE_DIR <- paste0(STATES, "/", STATE)
+  if (!file.exists(STATE_DIR))
+  {
+    dir.create(STATE_DIR, recursive = TRUE)
+  }
+
+  # STATE raw file  
+  write_xlsx(
+              stateRaw, 
+              paste0(STATE_DIR, "/",
+                     params$ELECTION_YEAR,
+                     "-EAVS-",
+                     STATE, "-",
+                     "Raw-Data-with-Labels.xlsx")
+            )
+  
+
+  stopifnot( ncol(stateRaw) == nrow(codebookEAVS) )
+  
+  # Ignore states with only a signle jurisdiction 
+  if (nrow(stateRaw) > 1)
+  {
+    # State Codebook
+    codebookState <-
+      codebookEAVS |>
+      select(VariableName, Format, Label) |>
+      mutate(
+              comment = NA_character_,
+              missing = NA_integer_,
+              unique  = NA_integer_,
+              min     = NA_integer_,
+              max     = NA_integer_,
+              `77ValidSkip`        = NA_integer_,
+              `88DoesNotApply`     = NA_integer_,
+              `99DataNotAvailable` = NA_integer_,
+              first   = NA_character_,
+              last    = NA_character_,
+              delete  = "no"     # if "yes", deleted in "abridged" file
+            )         |>
+      relocate(delete)
+      
+    # Loop through columns  
+    for (j in 1:ncol(stateRaw))
+    {
+      #"Brute force" checks. No attempt to vectorize.
+      column <- stateRaw[,j] |> pull()
+      
+      codebookState$missing[j] <- sum(is.na(column))
+      uniqueValues             <- unique(column) |> sort()
+      codebookState$unique[j]  <- length(uniqueValues)
+      
+      # String - first/last
+      if (codebookState$Format[j] == "String" &&
+          codebookState$unique[j]  > 0)
+      {
+        codebookState$first[j] <- head(uniqueValues,1) 
+        codebookState$last[j]  <- tail(uniqueValues,1)
+      }
+      
+      # Numeric - min/max; special code counts
+      if (codebookState$Format[j] == "Numeric" &&
+          codebookState$unique[j]  > 0)
+      {
+        # suppress warnings when all values are missing
+        suppressWarnings( codebookState$min[j]  <- min(column, na.rm = TRUE) )
+        suppressWarnings( codebookState$max[j]  <- max(column, na.rm = TRUE) )
+        
+        codebookState$`77ValidSkip`[j]        <- sum(column == -77, na.rm = TRUE)
+        codebookState$`88DoesNotApply`[j]     <- sum(column == -88, na.rm = TRUE)
+        codebookState$`99DataNotAvailable`[j] <- sum(column == -99, na.rm = TRUE)
+      }
+      
+      # All string values are the same?
+      if (codebookState$Format[j]  == "String" &&
+          codebookState$missing[j] == 0        &&
+          codebookState$unique[j]  == 1)
+      {
+         codebookState$comment[j] <- paste0("All values:  '", uniqueValues, "'")
+         codebookState$delete[j]  <- "yes"
+      }
+      
+      # All numeric values are the same?
+      # Special codes:  [`2024 Election Administration and Voting Survey Report`](https://www.eac.gov/sites/default/files/2025-06/2024_EAVS_Report_508c.pdf), pp. 258-259 
+      if (codebookState$Format[j]  == "Numeric" &&
+          codebookState$missing[j] == 0         &&
+          codebookState$unique[j]  == 1)
+      {
+         codebookState$comment[j] <-  case_when(
+                                                 codebookState$min[j] == -77     ~  
+                                                   "All values:  '-77' (Valid Skip)",
+                                                 codebookState$min[j] == -88     ~  
+                                                   "All values:  '-88' (Does Not Apply)",
+                                                 codebookState$min[j] == -99     ~  
+                                                   "All values:  '-99' (Data Not Available)",
+                                                 
+                                                 TRUE                            ~  
+                                                   paste0("All values:  '", uniqueValues[1], "'")
+                                               )
+         codebookState$delete[j]  <- "yes"
+      }
+
+      # Are all numeric values missing?
+      if (codebookState$missing[j] == nrow(stateRaw) &&
+          codebookState$unique[j]  == 0)
+      {
+        codebookState$comment[j] <- "All values missing"
+        codebookState$delete[j]  <- "yes"
+      }
+      
+    }
+   
+    # Write state-specific EAVS "abridged" file
+    stateAbridged <- stateRaw[, codebookState$delete == "no"]
+    
+    write_xlsx(stateAbridged,
+                 paste0(STATE_DIR, "/",
+                       params$ELECTION_YEAR,
+                       "-EAVS-",
+                       STATE, "-",
+                       "Abridged-Data.xlsx")
+               )
+    
+    # Write state-specific codebook
+    write_xlsx(codebookState,
+                 paste0(STATE_DIR, "/",
+                       params$ELECTION_YEAR,
+                       "-EAVS-",
+                       STATE, "-",
+                       "Codebook.xlsx")
+               )
+    
+    
+    stateCounts$Columns[i] <- ncol(stateAbridged)
+  }
+}
+
+```
+
+# Jurisdiction Counts by State
+
+Also shows number of columns in abridged EAVS state files
+
+```{r}
+write_xlsx(stateCounts, paste0(params$ELECTION_YEAR,
+                               "-EAVS-Jurisdiction-Counts-by-State.xlsx"))
+```
+
+```{r}
+stateCounts |> Show()
+```
+
+# Epilog {.tabset .tabset-fade .tabset-pills}
+
+## {.active}
+
+## Session Info
+
+```{r devtoolsSessionInfo}
+devtools::session_info()
+```
+
+</div>
+
+```{r epilogDeltaTime, echo=FALSE}
+time.2 <- Sys.time()
+processingTime <- paste("Processing time:", sprintf("%.1f",
+                        as.numeric(difftime(time.2,
+                                            time.1, units="secs"))), "secs\n")
+```
+
+`r processingTime`
+`r format(time.2, "%Y-%m-%d %H%M")`
+
