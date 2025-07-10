@@ -32,10 +32,13 @@ For example for Kansas:
 
 States with only a single jurisdication only have a single file with the single line of EAVS data.
 
+<hr>
+
 The table below shows the number of jurisdictions (usually counties) by state.
 
-![Reduced Columns](2024/2024-EAVS-Jurisdictions-and-Reduced-Columns.jpg)
+<img src="2024/2024-EAVS-Jurisdictions-and-Reduced-Columns.jpg" alt="Reduced Columns" style="width:75%; height:auto;">
 
-![Report](2024/2024-EAVS-Comprehensive-Report.jpg)
+<hr>
 
+<img src="2024/2024-EAVS-Comprehensive-Report.jpg" alt="Report" style="width:50%; height:auto;">
 
