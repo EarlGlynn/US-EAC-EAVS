@@ -1,4 +1,4 @@
-# Data from EAC's Election Administrtaion and Voting Survey (EAVS) Comprehensive Report
+# Data from EAC's Election Administration and Voting Survey (EAVS) Comprehensive Report
 
 # 2024
 
@@ -12,7 +12,7 @@ When browsed in Excel this file contained a staggering 535 columns of data for e
 
 Most states (or DC or territories) had many columns of data missing, or coded with special numbers (-77, -88, and -99) that were constant for a whole column.
 
-A Posit R Notebook manipulates this large table and extracts data for all the jurisdications in a state, and removes columns that were missing data or were constant.
+A Posit R Notebook manipulates this large table and extracts data for all the jurisdictions in a state, and removes columns that were missing data or were constant.
 
 A state-specific modified "Codebook" (based on the [EAC Codebook](https://www.eac.gov/sites/default/files/2025-06/2024_EAVS_Codebook.xlsx)) indicates why columns were removed.
 
@@ -30,7 +30,7 @@ For example for Kansas:
 
 * 2024-EAVS-KANSAS-Codebook.xlsx [535 rows of information about all original EAVSfields]
 
-States with only a single jurisdication only have a single file with the single line of EAVS data.
+A state with only a single jurisdiction only has a single file with the single line of EAVS data.
 
 <hr>
 
