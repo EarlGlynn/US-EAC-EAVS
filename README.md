@@ -6,7 +6,7 @@
 
 Data accompanying the 2024 EAVS report was released online on June 30, 2025.
 
-Data files in five formats were available.  This project started with the CSV file, which can be downloaded as 2024_EAVS_for_Public_Release_nolabel_V1_csv.zip`.
+Data files in five formats were available.  This project started with the [CSV file](https://www.eac.gov/sites/default/files/2025-06/2024_EAVS_for_Public_Release_nolabel_V1_csv.zip), which can be downloaded as 2024_EAVS_for_Public_Release_nolabel_V1_csv.zip`.
 
 When browsed in Excel this file contained a staggering 535 columns of data for each of 6461 "jurisdictions" (counties in most states).
 
@@ -14,7 +14,7 @@ Most states (or DC or territories) had many columns of data missing, or coded wi
 
 A Posit R Notebook manipulates this large table and extracts data for all the jurisdications in a state, and removes columns that were missing data or were constant.
 
-A state-specific modified "Codebook" (based on the EAC Codebook) indicates why columns were removed.
+A state-specific modified "Codebook" (based on the [EAC Codebook](https://www.eac.gov/sites/default/files/2025-06/2024_EAVS_Codebook.xlsx)) indicates why columns were removed.
 
 EAC for some reason used quite cryptic columns names in the data, but provided a verbose version in its Codebook.
 
@@ -36,7 +36,7 @@ States with only a single jurisdication only have a single file with the single 
 
 The table below shows the number of jurisdictions (usually counties) by state.
 
-<img src="2024/2024-EAVS-Jurisdictions-and-Reduced-Columns.jpg" alt="Reduced Columns" style="width:75%; height:auto;">
+<img src="2024/2024-EAVS-Jurisdictions-and-Reduced-Columns.jpg" alt="Reduced Columns" style="width:60%; height:auto;">
 
 <hr>
 
