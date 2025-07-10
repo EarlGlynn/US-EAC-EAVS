@@ -4,11 +4,11 @@
 
 See [EAC Studies and Reports](https://www.eac.gov/research-and-data/studies-and-reports) page.
 
-Data accompanying the 2024 EAVS report was released online on June 30, 2025.
+Data accompanying the [2024 EAVS report](https://www.eac.gov/sites/default/files/2025-06/2024_EAVS_Report_508c.pdf) was released online on June 30, 2025.
 
-Data files in five formats were available.  This project started with the [CSV file](https://www.eac.gov/sites/default/files/2025-06/2024_EAVS_for_Public_Release_nolabel_V1_csv.zip), which can be downloaded as 2024_EAVS_for_Public_Release_nolabel_V1_csv.zip`.
+Data files in five formats were available.  This project started with the [CSV file](https://www.eac.gov/sites/default/files/2025-06/2024_EAVS_for_Public_Release_nolabel_V1_csv.zip), which can be downloaded as `2024_EAVS_for_Public_Release_nolabel_V1_csv.zip`.
 
-When browsed in Excel this file contained a staggering 535 columns of data for each of 6461 "jurisdictions" (counties in most states).
+When browsed in Excel this file contains a staggering 535 columns of data for each of 6461 "jurisdictions" (counties in most states).
 
 Most states (or DC or territories) had many columns of data missing, or coded with special numbers (-77, -88, and -99) that were constant for a whole column.
 
